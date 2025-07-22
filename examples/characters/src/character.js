@@ -2,11 +2,11 @@ import { Person } from './person.js';
 import { rollDice } from './roll-dice.js';
 
 export class Character extends Person {
-  constructor(firstName, lastName, role) {
+  constructor(firstName, lastName, role, level = 1) {
     super(firstName, lastName);
 
     this.role = role;
-    this.level = 1;
+    this.level = level;
 
     this.createdAt = new Date();
     this.lastModified = this.createdAt;
