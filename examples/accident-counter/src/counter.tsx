@@ -2,8 +2,8 @@ import React from 'react';
 import { useReducer, useEffect } from 'react';
 import { reducer } from './reducer';
 
-export const Counter = () => {
-  const [state, dispatch] = useReducer(reducer, { count: 0 });
+export const Counter = ({ initialCount = 0 }) => {
+  const [state, dispatch] = useReducer(reducer, { count: initialCount });
   const unit = state.count === 1 ? 'day' : 'days';
 
   useEffect(() => {
@@ -23,16 +23,21 @@ export const Counter = () => {
           </p>
         </div>
         <div className="flex gap-4">
-          <button onClick={() => dispatch({ type: 'increment' })}>
+          <button
+            data-testid="increment-button"
+            onClick={() => dispatch({ type: 'increment' })}
+          >
             Increment
           </button>
           <button
+            data-testid="decrement-button"
             onClick={() => dispatch({ type: 'decrement' })}
             disabled={state.count === 0}
           >
             Decrement
           </button>
           <button
+            data-testid="reset-button"
             onClick={() => dispatch({ type: 'reset' })}
             disabled={state.count === 0}
           >
