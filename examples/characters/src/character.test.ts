@@ -1,21 +1,34 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { Character } from './character.js';
 import { Person } from './person.js';
+import { rollDice } from './roll-dice.js';
 
 describe('Character', () => {
-    const firstName = 'Ada';
-    const lastName = 'Lovelace';
-    const role = 'Computer Scientist';
-  it(
-    'should create a character with all of the correct properties',
-    () => {
-    
-      const char = new Character(firstName, lastName, role );
+  const firstName = 'Ada';
+  const lastName = 'Lovelace';
+  const role = 'Computer Scientist';
+  const level = 1;
+  let character;
 
-     expect(char).toEqual({
-      firstName, lastName, role,
-      strength: expect.any(Number),
-      wisdom: expect.any(Number),
+  beforeEach(() => {
+    // I don't need to call this anywhere, vi will override anywhere that
+    // Math.random() is called in my tests and give it the mock value = 12.
+    // Now the randomness is controlled
+    const randomSpy = vi.spyOn(Math, 'random').mockImplementation(() => 0.5);
+
+    const mockDiceRoll = rollDice(4, 6); // this is controlled by our mock
+    character = new Character(firstName, lastName, role, level, mockDiceRoll);
+  });
+
+  it('should create a character with all of the correct properties', () => {
+    expect(character).toEqual({
+      firstName,
+      lastName,
+      role,
+      // strength: expect.any(Number),
+      strength: 12,
+      // wisdom: expect.any(Number),
+      wisdom: 12,
       intelligence: expect.any(Number),
       charisma: expect.any(Number),
       constitution: expect.any(Number),
@@ -24,24 +37,20 @@ describe('Character', () => {
       createdAt: expect.any(Date),
       lastModified: expect.any(Date),
       id: expect.stringContaining('person-'),
-     })
-    },
-  );
+    });
+  });
 
   it('should allow you to increase the level', () => {
-    const char = new Character(firstName, lastName, role);
-    const initialLevel = char.level;
+    const initialLevel = character.level;
 
     expect(initialLevel).toBe(1);
 
-    char.levelUp();
+    character.levelUp();
 
-    expect(char.level).toBeGreaterThan(initialLevel);
+    expect(character.level).toBeGreaterThan(initialLevel);
   });
 
   it('should update the last modified date when leveling up', () => {
-    const character = new Character(firstName, lastName, role);
-
     const initialDate = character.lastModified;
 
     character.levelUp();

@@ -6,11 +6,18 @@ import { sendToServer } from './send-to-server';
  * Log a message to the console in development mode or send it to the server in production mode.
  * @param  {string} message
  */
-export function log(message) {
-  if (import.meta.env.MODE !== 'production') {
+// export function log(message) {
+export function log(
+  message,
+  {
+    mode = import.meta.env.MODE,
+    productionCallback = (level, message) => sendToServer(level, message),
+  } = {},
+) {
+  if (mode !== 'production') {
     console.log(message);
   } else {
-    sendToServer('info', message);
+    productionCallback('info', message);
   }
 }
 
@@ -18,11 +25,17 @@ export function log(message) {
  * Log a message to the console in development mode or send it to the server in production mode.
  * @param  {string} message
  */
-log.warn = function warn(message) {
-  if (import.meta.env.MODE !== 'production') {
+log.warn = function warn(
+  message,
+  {
+    mode = import.meta.env.MODE,
+    productionCallback = (level, message) => sendToServer(level, message),
+  } = {},
+) {
+  if (mode !== 'production') {
     console.warn(message);
   } else {
-    sendToServer('warn', message);
+    productionCallback('warn', message);
   }
 };
 
@@ -30,10 +43,16 @@ log.warn = function warn(message) {
  * Log a message to the console in development mode or send it to the server in production mode.
  * @param  {string} message
  */
-log.error = function error(message) {
-  if (import.meta.env.MODE !== 'production') {
-    console.log(message);
+log.error = function error(
+  message,
+  {
+    mode = import.meta.env.MODE,
+    productionCallback = (level, message) => sendToServer(level, message),
+  } = {},
+) {
+  if (mode !== 'production') {
+    console.error(message);
   } else {
-    sendToServer('error', message);
+    productionCallback('error', message);
   }
 };
